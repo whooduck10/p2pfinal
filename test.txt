@@ -1,0 +1,22 @@
+import json
+
+# 1. Create the body
+body_data = {
+    "ip": "127.0.0.1",
+    "port": 8000
+}
+body_json = json.dumps(body_data) # Converts to '{"ip": "127.0.0.1", "port": 8000}'
+
+# 2. Calculate length
+content_length = len(body_json)
+
+# 3. Construct the full message
+request_message = (
+    "POST /remove HTTP/1.1\r\n"
+    "Host: localhost:9000\r\n"
+    "Content-Type: application/json\r\n"
+    "Cookie: auth=true\r\n"
+    f"Content-Length: {content_length}\r\n"
+    "\r\n"
+    f"{body_json}"
+)

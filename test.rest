@@ -1,0 +1,89 @@
+### Login (Required for protected endpoints)
+# This will set the 'auth=true' cookie.
+POST http://localhost:9000/login
+Content-Type: application/x-www-form-urlencoded
+
+username=admin&password=password
+
+### Home (Protected)
+GET http://localhost:6010/api/get-messages
+
+### Hello (PUT)
+GET http://localhost:6004/index.html
+
+
+Hello Server
+
+### Get User (Unprotected)
+GET http://localhost:6004/api/get-messages
+
+
+# get index.html from peer
+GET http://localhost:6004/api/get-messages
+
+
+
+### Echo (Unprotected)
+POST http://localhost:9000/echo
+Content-Type: application/json
+
+{
+    "message": "Hello World"
+}
+
+### Submit Info (Register Peer 1) - Protected
+POST http://localhost:9000/submit-info
+Content-Type: application/json
+Cookie: auth=true
+
+{
+    "ip": "127.0.0.1",
+    "port": 8000
+}
+
+### Submit Info (Register Peer 2) - Protected
+POST http://localhost:9000/submit-info
+Content-Type: application/json
+Cookie: auth=true
+
+{
+    "ip": "127.0.0.1",
+    "port": 8000
+}
+
+### Add List (Activate Peer 1) - Protected
+POST http://localhost:9000/add-list
+Content-Type: application/json
+Cookie: auth=true
+
+{
+    "ip": "127.0.0.1",
+    "port": 8000
+}
+
+### Get List (Should show Peer 1) - Protected
+GET http://localhost:9000/get-list
+
+
+### Get List (Should show Peer 1) - Protected
+GET http://localhost:6004/get-list
+Cookie: auth=true
+
+### Remove (Deactivate Peer 1) - Protected
+POST http://localhost:9000/remove
+Content-Type: application/json
+Cookie: auth=true
+
+{
+    "ip": "127.0.0.1",
+    "port": 8000
+}
+
+### Get List (Should be empty) - Protected
+GET http://localhost:6004/userip
+
+
+
+POST http://localhost:9000/
+Content-Type: application/json
+Cookie: auth=tr
