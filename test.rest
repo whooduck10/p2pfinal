@@ -9,7 +9,7 @@ username=admin&password=password
 GET http://localhost:6010/api/get-messages
 
 ### Hello (PUT)
-GET http://localhost:6004/index.html
+GET http://localhost:6004/get-list
 
 
 Hello Server

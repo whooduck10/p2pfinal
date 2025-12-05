@@ -39,7 +39,8 @@ messagereceived = [
 ]
 PORT = 5001  # Default port
 IP = "192.168.1.2"
-
+server_ip = "127.0.0.1"
+server_port = 9000
 
 # susubmit ip : /submit-list 
 
@@ -82,6 +83,8 @@ def home(headers, body):
     "Cookie: auth=true\r\n"
     "\r\n"
       )
+      client_socket = socket.socket()
+      client_socket.connect(("127.0.0.1", 9000))
       client_socket.send(request_message.encode())
       html_content = client_socket.receive_message().decode()
       client_socket.close()
@@ -265,12 +268,12 @@ def offline(ip,port,pepo):
   client_socket.send(request_message.encode())
 
 
-def submit_info(ip,port,pepo):
+def submit_info(ip,port,peer_ip,peer_port):
   client_socket = socket.socket()
   client_socket.connect((ip,port))
   body_data = {
-    "ip": "127.0.0.1",
-    "port": pepo
+    "ip": peer_ip,
+    "port": peer_port
   }
   body_json = json.dumps(body_data) # Converts to '{"ip": "127.0.0.1", "port": 8000}'
 
@@ -300,11 +303,11 @@ def listen_server(ip,port,peip,pepo):
 
     nconn = threading.Thread(target= proc_message, args = (addr, conn))
     nconn.start()
-def add_list(ip, port, peer_port):
+def add_list(ip, port, peer_ip,peer_port):
   client_socket = socket.socket()
   client_socket.connect((ip,port))
   
-  body_data = {"ip": "127.0.0.1", "port": peer_port}
+  body_data = {"ip": peer_ip, "port": peer_port}
   body_json = json.dumps(body_data)
   
   msg = (
@@ -328,7 +331,12 @@ def get_list(ip,port):
   receive_message = client_socket.recv(1024).decode()
   print(receive_message)
   return receive_message
-
+def setServerIP(ip):
+    global server_ip
+    server_ip = ip
+def setServerPort(port):
+    global server_port
+    server_port = port
 if __name__ == "__main__":
     # Parse command-line arguments to configure server IP and port
     parser = argparse.ArgumentParser(prog='Backend', description='', epilog='Beckend daemon')
@@ -343,6 +351,8 @@ if __name__ == "__main__":
     pepo = args.peer_port
     setIP(peip)
     setPort(pepo)
+    setServerIP(ip)
+    setServerPort(port)
     # threadlisten = threading.Thread(target= listen_server, args = (ip, port, peip,pepo))
     # threadlisten.daemon = True 
     # threadlisten.start()
@@ -353,9 +363,9 @@ if __name__ == "__main__":
     peer_thread.daemon = True 
     peer_thread.start()
     
-    submit_info(ip,port,pepo)
+    submit_info(ip,port,peip,pepo)
     time.sleep(1)
-    add_list(ip, port, pepo)
+    add_list(ip, port,peip,pepo)
     time.sleep(1)
     #get_list(ip,port)
 

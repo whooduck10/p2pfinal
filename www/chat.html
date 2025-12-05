@@ -62,7 +62,7 @@
         // State
         let users =     [];
         let messages = {};
-        let currentmessages = {"127.0.0.1:6004": [{"id": 1764943643332, "text": "afaf", "sender": "127.0.0.1:6004", "time": "09:07 PM", "receiver": "127.0.0.1:6010"}, {"id": 1764944023054, "text": "afaf", "sender": "127.0.0.1:6004", "time": "09:13 PM", "receiver": "127.0.0.1:6010"}]}
+        let currentmessages = [];
         
         let currentUserId = null;
         let isConnected = false;
@@ -100,7 +100,7 @@
                     avatarColor: getRandomColor()
                 }));
             } catch (error) {
-                console.error('Error fetching users:', error);
+                console.log('Error fetching users:', error);
                 return [];
             }
         }
@@ -219,18 +219,32 @@
             messagesContainerEl.innerHTML = '';
             //message = getMessages();
             messagesparsed = (messages);
-            console.log("messages", messages)
-            console.log("current type", typeof(messages))
+            // console.log("messages", messages)
+            // console.log("current type", typeof(messages))
+            //console.log("current userid", currentUserId)
+            
+            
+            //const mySentMessages = messagesparsed[currentUserId].filter(msg => msg.sender === currentUserIP)
+            console.log("messagesparsed", messagesparsed)
             console.log("current userid", currentUserId)
-            const list1 = messagesparsed[currentUserId] || [];
-            const list2 = messagesparsed[currentUserIP] || [];
+            console.log("current user ip", currentUserIP)
+            console.log("messagesparsed id", messagesparsed[currentUserId])
+            console.log("messagesparsed ip", messagesparsed[currentUserIP])
+            if(messagesparsed[currentUserId] === undefined){
+                messagesparsed[currentUserId] = [];
+            }
+            if(messagesparsed[currentUserIP] === undefined){
+                messagesparsed[currentUserIP] = [];
+            }
+            const list1 = messagesparsed[currentUserId].filter(msg => msg.receiver === currentUserIP) || [];
+            const list2 = messagesparsed[currentUserIP].filter(msg => msg.receiver === currentUserId) || [];
             const userMessages = [...list1, ...list2].sort((a, b) => a.id - b.id);
-            console.log("user id", currentUserId)
-            console.log("userMessages", userMessages)
+            //console.log("user id", currentUserId)
+            //console.log("userMessages", userMessages)
             
             userMessages.forEach(msg => {
                 const msgDiv = document.createElement('div');
-                console.log("msg", msg.sender)
+                //console.log("msg", msg.sender)
                 msgDiv.className = `message ${msg.sender === currentUserIP ? 'sent' : 'received'}`;
                 msgDiv.innerHTML = `
                     ${msg.text}
