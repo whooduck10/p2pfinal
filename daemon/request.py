@@ -95,7 +95,7 @@ class Request():
         # Prepare the request line from the request header
         self.method, self.path, self.version = self.extract_request_line(request) # get method, path and version from first line: GET /test1/ HTTP/1.1
         print("[Request] {} path {} version {}".format(self.method, self.path, self.version))
-        print("debug prepare function")
+        //print("debug prepare function")
         #
         # @bksysnet Preapring the webapp hook with WeApRous instance
         # The default behaviour with HTTP server is empty routed

@@ -75,7 +75,7 @@
                 // const data = await res.json();
                 // const data = await res.text();
                 data = await res.statusText
-                console.log("Messages received:", data); // Debugging
+                //console.log("Messages received:", data); // Debugging
                 return data; 
             } catch (error) {
                 console.error('Error fetching messages:', error);
@@ -121,7 +121,7 @@
     });
 
     let ip = res.statusText; 
-    console.log("ip", typeof(ip));
+    //console.log("ip", typeof(ip));
     return ip; 
 }
         // DOM Elements
@@ -192,7 +192,7 @@
                 alert('Please connect first!');
                 return;
             }
-            console.log(id)
+            //console.log(id)
 
             currentUserId = id;
             const user = users.find(u => u.id === id);
@@ -225,11 +225,11 @@
             
             
             //const mySentMessages = messagesparsed[currentUserId].filter(msg => msg.sender === currentUserIP)
-            console.log("messagesparsed", messagesparsed)
-            console.log("current userid", currentUserId)
-            console.log("current user ip", currentUserIP)
-            console.log("messagesparsed id", messagesparsed[currentUserId])
-            console.log("messagesparsed ip", messagesparsed[currentUserIP])
+            // console.log("messagesparsed", messagesparsed)
+            // console.log("current userid", currentUserId)
+            // console.log("current user ip", currentUserIP)
+            // console.log("messagesparsed id", messagesparsed[currentUserId])
+            // console.log("messagesparsed ip", messagesparsed[currentUserIP])
             if(messagesparsed[currentUserId] === undefined){
                 messagesparsed[currentUserId] = [];
             }
@@ -260,8 +260,8 @@
             messagesContainerEl.scrollTop = messagesContainerEl.scrollHeight;
         }
         function online(){
-            console.log(currentUserIP.split(":")[0])
-            console.log(currentUserIP.split(":")[1])
+            // console.log(currentUserIP.split(":")[0])
+            // console.log(currentUserIP.split(":")[1])
             fetch("/add-list",{
                 method:"POST",
                 headers:{
@@ -293,9 +293,9 @@
         function sendMessage() {
             const text = messageInputEl.value.trim();
             if (!text || !currentUserId) return;
-            console.log("currentUserId    ",currentUserId)
-            console.log("currentUserIP    ",(currentUserIP))
-            console.log("current message    ",messages)
+            // console.log("currentUserId    ",currentUserId)
+            // console.log("currentUserIP    ",(currentUserIP))
+            // console.log("current message    ",messages)
             // Add message
             const newMsg = {    
                 id: Date.now(),
@@ -307,11 +307,11 @@
 
             if (!messages[currentUserId]) {
                 messages[currentUserId] = [];
-                console.log("debug 1 ")
+                //console.log("debug 1 ")
             }
             messages[currentUserId].push(newMsg);
 
-            console.log(newMsg)
+            // console.log(newMsg)
             sendMessagetoPeer(newMsg)
             messageInputEl.value = '';
             renderMessages();
