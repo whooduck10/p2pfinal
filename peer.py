@@ -34,8 +34,7 @@ import threading
 from daemon.weaprous import WeApRous
 
 messagereceived = [
-  {"id":1764943643332,"text":"afaf","sender":"127.0.0.1:6004","time":"09:07 PM","receiver":"127.0.0.1:6010"},
-  {"id":1764944023054,"text":"afaf","sender":"127.0.0.1:6004","time":"09:13 PM","receiver":"127.0.0.1:6010"}
+
 ]
 PORT = 5001  # Default port
 IP = "192.168.1.2"
@@ -52,12 +51,7 @@ server_port = 9000
 
 
 # /get-list 
-request_message_getlist = (
-    f"GET /get-list HTTP/1.1\r\n"
-    f"Host: {server_ip}:{server_port}\r\n"
-    f"Cookie: auth=true\r\n"
-    f"\r\n"
-)
+
 
 app = WeApRous()
 
@@ -162,7 +156,7 @@ def get_list(headers, body):
         return 500, "Lỗi khi lấy danh sách Peer." # Lỗi server nội bộ
         
     # 5. Nếu thành công, trả về mã 200 và Dữ liệu đã là Dictionary (framework sẽ tự động serialize thành JSON)
-    return  200, "HTTP/1.1 200 OK\r\n"+ active_peers_dict
+    return  200,  active_peers_dict
 
 @app.route("/userip", methods=["GET"])
 def get_user(headers, body):
@@ -180,6 +174,12 @@ def get_listfunc(ip, port):
     client_socket = socket.socket()
     try:
         client_socket.connect((ip, port))
+        request_message_getlist = (
+            f"GET /get-list HTTP/1.1\r\n"
+            f"Host: {ip}:{port}\r\n"
+            f"Cookie: auth=true\r\n"
+            f"\r\n"
+        )
         client_socket.send(request_message_getlist.encode()) 
         
         # 1. Receive and DECODE the bytes to string immediately
@@ -242,12 +242,40 @@ def connect_server(ip,port,peip,pepo):
     
     nconn.start()
 
-def offline(ip,port,pepo):
+def offline(ip, port, pepo):
+    # Note: 'ip' here is the SERVER ip. We need the PEER ip to remove.
+    # But looking at your main code, you don't pass peer_ip to offline.
+    # You need to use the global IP variable you set via setIP
+    global IP 
+    
+    client_socket = socket.socket()
+    client_socket.connect((ip, port))
+
+    body_data = {
+        "ip": IP,     # <--- FIX: Use the global Peer IP, not "127.0.0.1"
+        "port": pepo
+    }
+    body_json = json.dumps(body_data)
+
+    content_length = len(body_json)
+
+    request_message = (
+        f"POST /remove HTTP/1.1\r\n"
+        f"Host: {ip}:{port}\r\n"
+        f"Content-Type: application/json\r\n"
+        f"Cookie: auth=true\r\n"
+        f"Content-Length: {content_length}\r\n"
+        f"\r\n"
+        f"{body_json}"
+    )
+    client_socket.send(request_message.encode())
+    client_socket.close()
+def offline2(ip,port,pepo):
   client_socket = socket.socket()
   client_socket.connect((ip,port))
 
   body_data = {
-    "ip": "127.0.0.1",
+    "ip": IP,
     "port": pepo
   }
   body_json = json.dumps(body_data) # Converts to '{"ip": "127.0.0.1", "port": 8000}'

@@ -148,7 +148,7 @@ class HttpAdapter:
                 req.path = "/index.html"  
 
         #TASK 2.1: Handle the auth for the API
-        protected_tracker_API = ["/submit-info","/add-list", "/remove", "/get-list", "/send-message", "/receive-message", "/api/get-messages"]
+        protected_tracker_API = ["/submit-info","/add-list", "/remove"]
 
         if req.path in protected_tracker_API:
             print("req.path",req.path)
