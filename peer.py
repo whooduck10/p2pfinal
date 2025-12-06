@@ -53,10 +53,10 @@ server_port = 9000
 
 # /get-list 
 request_message_getlist = (
-    "GET /get-list HTTP/1.1\r\n"
-    "Host: localhost:9000\r\n"
-    "Cookie: auth=true\r\n"
-    "\r\n"
+    f"GET /get-list HTTP/1.1\r\n"
+    f"Host: {server_ip}:{server_port}\r\n"
+    f"Cookie: auth=true\r\n"
+    f"\r\n"
 )
 
 app = WeApRous()
@@ -78,13 +78,13 @@ def home(headers, body):
 
 # 3. Construct the full message
       request_message = (
-    "GET /index.html HTTP/1.1\r\n"
-    "Host: localhost:9000\r\n"
-    "Cookie: auth=true\r\n"
+    f"GET /index.html HTTP/1.1\r\n"
+    f"Host: {server_ip}:{server_port}\r\n"
+    f"Cookie: auth=true\r\n"
     "\r\n"
       )
       client_socket = socket.socket()
-      client_socket.connect(("127.0.0.1", 9000))
+      client_socket.connect((server_ip, server_port))
       client_socket.send(request_message.encode())
       html_content = client_socket.receive_message().decode()
       client_socket.close()
@@ -156,7 +156,7 @@ def send_message(headers, body):
 def get_list(headers, body):
     # ... (code debug)
     
-    active_peers_dict = get_listfunc("127.0.0.1", 9000)
+    active_peers_dict = get_listfunc(server_ip, server_port)
     
     if active_peers_dict is None:
         return 500, "Lỗi khi lấy danh sách Peer." # Lỗi server nội bộ

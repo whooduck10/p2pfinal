@@ -81,12 +81,20 @@ class Request():
              
     def prepare_headers(self, request):
         """Prepares the given HTTP headers."""
-        lines = request.split('\r\n')
+        # FIX 1: Use splitlines() to handle \r\n AND \n automatically
+        lines = request.splitlines()
         headers = {}
-        for line in lines[1:]:
-            if ': ' in line:
-                key, val = line.split(': ', 1)
-                headers[key.lower()] = val
+        
+        # Start from 1 to skip the "GET / HTTP/1.1" line
+        if len(lines) > 1:
+            for line in lines[1:]:
+                # FIX 2: Check for ':' generally, not ': '
+                if ':' in line:
+                    key, val = line.split(':', 1)
+                    # FIX 3: Strip spaces manually. 
+                    # This turns "Cookie: auth=true" OR "Cookie:auth=true" into the same result.
+                    headers[key.lower().strip()] = val.strip()
+                    
         return headers
 
     def prepare(self, request, routes=None):
@@ -95,7 +103,7 @@ class Request():
         # Prepare the request line from the request header
         self.method, self.path, self.version = self.extract_request_line(request) # get method, path and version from first line: GET /test1/ HTTP/1.1
         print("[Request] {} path {} version {}".format(self.method, self.path, self.version))
-        //print("debug prepare function")
+        #print("debug prepare function")
         #
         # @bksysnet Preapring the webapp hook with WeApRous instance
         # The default behaviour with HTTP server is empty routed
@@ -112,18 +120,21 @@ class Request():
             #
 
         self.headers = self.prepare_headers(request)
-        cookies = self.headers.get('cookie', '')
-            #
-            #  TODO: implement the cookie function here
-            #        by parsing the header            #
         
-        #self.prepare_cookies(self.cookies) #format from {"auth=true",...} to {"auth":"true",...}
-        self.cookies = {}
+        # Get the cookie string (keys are lowercased by our new prepare_headers)
+        cookies = self.headers.get('cookie')
+        
+        self.cookies = {} # Reset cookies
+        
         if cookies:
             for pair in cookies.split(';'):
                 if '=' in pair:
-                    key, value = pair.strip().split('=', 1)
-                    self.cookies[key] = value #get the value of auth
+                    key, value = pair.split('=', 1)
+                    # FIX 4: Strip keys/values just to be safe 
+                    # (Clean up " auth=true" -> "auth")
+                    self.cookies[key.strip()] = value.strip()
+                    
+            # This line in your original code is redundant/circular but harmless:
             self.prepare_cookies(cookies)
         
 

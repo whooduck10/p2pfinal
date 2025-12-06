@@ -124,8 +124,9 @@ class HttpAdapter:
                 resp.cookies['auth'] = 'true'
                 resp.status_code=200
                 resp.reason='OK'
-                #resp.headers['Set-Cookie'] = 'auth=true; Path=/; HttpOnly'
+                resp.headers['Set-Cookie'] = 'auth=true; Path=/; HttpOnly'
             else:
+                print("111111111111111111111")
                 conn.sendall(resp.build_unauthorized())
                 conn.close()
                 return #401
@@ -139,6 +140,7 @@ class HttpAdapter:
                 if req.path == "/login":
                     req.path = "/login.html"
                 else:
+                    print("222222222222222")
                     conn.sendall(resp.build_unauthorized())
                     conn.close()
                     return
@@ -149,17 +151,22 @@ class HttpAdapter:
         protected_tracker_API = ["/submit-info","/add-list", "/remove", "/get-list", "/send-message", "/receive-message", "/api/get-messages"]
 
         if req.path in protected_tracker_API:
+            print("req.path",req.path)
             auth = req.cookies.get("auth")
+            
+            print("req.cookies",req.cookies)
+            print("auth",auth)
             if not auth:
                 # user is NOT authenticated 
                 req.hook = None
                 if req.path == "/login":
                     req.path = "/login.html"
                 else:
+                    print("3333333333333333")
                     conn.sendall(resp.build_unauthorized())
                     conn.close()
                     return
-
+            print("4444444444444444")
         # Handle request hook
         if req.hook:
             print("[HttpAdapter] hook in route-path METHOD {} PATH {}".format(req.hook._route_path,req.hook._route_methods)) # o day bi nguoc ha ta?
@@ -191,20 +198,12 @@ class HttpAdapter:
     @property
     def extract_cookies(self, req, resp):
         """
-        Build cookies from the :class:`Request <Request>` headers.
-
-        :param req:(Request) The :class:`Request <Request>` object.
-        :param resp: (Response) The res:class:`Response <Response>` object.
-        :rtype: cookies - A dictionary of cookie key-value pairs.
+        Retrieve cookies that are already parsed by the Request object.
         """
-        cookies = {}
-        for header in req.headers:
-            if header.startswith("Cookie:"):
-                cookie_str = header.split(":", 1)[1].strip()
-                for pair in cookie_str.split(";"):
-                    key, value = pair.strip().split("=")
-                    cookies[key] = value
-        return cookies
+        # Since Request.prepare() already did the work, just return that.
+        if req.cookies:
+            return req.cookies
+        return {}
 
     def build_response(self, req, resp):
         """Builds a :class:`Response <Response>` object 
