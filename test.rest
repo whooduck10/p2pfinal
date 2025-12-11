@@ -9,7 +9,7 @@ username=admin&password=password
 GET http://localhost:6010/api/get-messages
 
 ### Hello (PUT)
-GET http://localhost:6004/get-list
+GET http://localhost:6013/get-list
 
 
 Hello Server
@@ -62,13 +62,12 @@ Cookie: auth=true
 }
 
 ### Get List (Should show Peer 1) - Protected
-GET http://localhost:9000/get-list
+GET http://localhost:6011/get-list
 
 
 ### Get List (Should show Peer 1) - Protected
-GET http://192.168.56.1:6002/get-list
-Host: 192.168.56.1:6002
-Cookie: auth=true
+GET http://localhost:9000/get-list
+
 
 ### Remove (Deactivate Peer 1) - Protected
 POST http://localhost:9000/remove

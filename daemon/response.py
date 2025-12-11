@@ -350,6 +350,9 @@ class Response():
         #
         # TODO: add support objects
         #
+        elif path == '/get-list':
+            base_dir = self.prepare_content_type(mime_type = 'application/json')
+            j
         elif mime_type == 'application/octet-stream':
             base_dir = self.prepare_content_type(mime_type = 'application/json')
             path = "return.json"

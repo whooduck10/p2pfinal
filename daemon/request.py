@@ -101,6 +101,7 @@ class Request():
         """Prepares the entire request with the given parameters."""
 
         # Prepare the request line from the request header
+        print("request: ", request)
         self.method, self.path, self.version = self.extract_request_line(request) # get method, path and version from first line: GET /test1/ HTTP/1.1
         print("[Request] {} path {} version {}".format(self.method, self.path, self.version))
         #print("debug prepare function")

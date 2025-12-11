@@ -113,12 +113,12 @@ def get_messages(headers, body):
     except Exception as e:
       return 500, str(e)
 
-@app.route("/send-message", methods=["POST"])
+@app.route("/send-peer", methods=["POST"])
 def send_message(headers, body):
     try:
       print("headers: ",headers)
       print("body: ",body)
-      new_headers = headers.replace("/send-message", "/receive-message", 1)
+      new_headers = headers.replace("/send-peer", "/receive-message", 1)
       print("new_headers: ",new_headers)
       
       body_json = json.loads(body)
@@ -151,12 +151,13 @@ def get_list(headers, body):
     # ... (code debug)
     
     active_peers_dict = get_listfunc(server_ip, server_port)
-    
+    print("response: ")
+    print(active_peers_dict)
     if active_peers_dict is None:
         return 500, "Lỗi khi lấy danh sách Peer." # Lỗi server nội bộ
         
     # 5. Nếu thành công, trả về mã 200 và Dữ liệu đã là Dictionary (framework sẽ tự động serialize thành JSON)
-    return  200,  active_peers_dict
+    return  200, "OK \r\n" + active_peers_dict
 
 @app.route("/userip", methods=["GET"])
 def get_user(headers, body):
@@ -192,26 +193,28 @@ def get_listfunc(ip, port):
         client_socket.close()
     print("start: {}\n".format(receive_message))
 
-    lines = receive_message.split('\n', 1)
+    lines = receive_message.split('\r\n\r\n', 1)
+    print("lines: {}\n".format(lines[1]))
     clean_response = lines[1] if len(lines) > 1 else ""
+    print("clean_response: {}\n".format(clean_response))
     return clean_response
-    # 2. Now receive_message is a string, so we can use string separators
-    separator = '\r\n\r\n'
+    # # 2. Now receive_message is a string, so we can use string separators
+    # separator = '\r\n\r\n'
     
-    if separator in receive_message:
-        # 3. Split header and body
-        header_part, body_content_raw = receive_message.split(separator, 1)
+    # if separator in receive_message:
+    #     # 3. Split header and body
+    #     header_part, body_content_raw = receive_message.split(separator, 1)
         
-        # 4. Parse the body JSON string into a Python Dictionary
-        try:
-            # strip() removes extra whitespace/newlines around the JSON
-            return json.loads(body_content_raw.strip()) 
-        except json.JSONDecodeError as e:
-            print(f"[ERROR] Failed to parse JSON body: {e}")
-            return None
+    #     # 4. Parse the body JSON string into a Python Dictionary
+    #     try:
+    #         # strip() removes extra whitespace/newlines around the JSON
+    #         return json.loads(body_content_raw.strip()) 
+    #     except json.JSONDecodeError as e:
+    #         print(f"[ERROR] Failed to parse JSON body: {e}")
+    #         return None
             
-    print("[ERROR] Header separator not found in response.")
-    return None
+    # print("[ERROR] Header separator not found in response.")
+    # return None
 
 
 def handle_peer_connection(client,addr):

@@ -12,7 +12,7 @@ python start_tracker.py --server-ip 10.123.176.214 --server-port 9000
 
 run peer
 make sure port 6000(the port of peer) is free
-python peer.py --server-ip 127.0.0.1 --server-port 9000 --peer-ip 127.0.0.1 --peer-port 6000
+python peer.py --server-ip 127.0.0.1 --server-port 9000 --peer-ip 127.0.0.1 --peer-port 6010
 
 python peer.py --server-ip 192.168.56.1 --server-port 9000 --peer-ip 192.168.56.1 --peer-port 6002
 
