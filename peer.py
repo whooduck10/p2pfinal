@@ -88,19 +88,19 @@ def home(headers, body):
 @app.route("/receive-message", methods=["POST"])
 def receive_message(headers, body):
     try:
-      print("new_headers received: ",headers)
-      print("message received: ",json.loads(body)["message"])
+      # print("new_headers received: ",headers)
+      # print("message received: ",json.loads(body)["message"])
       messagereceived.append(json.loads(body)["message"])
-      print("messagereceived: ",messagereceived)
+      # print("messagereceived: ",messagereceived)
       return 200, "Message received successfullyfasdfa"
     except Exception as e:
       return 500, str(e )
 @app.route("/api/get-messages", methods=["GET"])
 def get_messages(headers, body):
     try:
-      print("api/get-messages: ")
+      # print("api/get-messages: ")
       # print("body: ",body)
-      print("messagereceived: ",messagereceived)
+      # print("messagereceived: ",messagereceived)
       grouped = {}
       for msg in messagereceived:
           sender = msg.get("sender")
@@ -116,10 +116,17 @@ def get_messages(headers, body):
 @app.route("/send-peer", methods=["POST"])
 def send_message(headers, body):
     try:
+<<<<<<< HEAD
       print("headers: ",headers)
       print("body: ",body)
       new_headers = headers.replace("/send-peer", "/receive-message", 1)
       print("new_headers: ",new_headers)
+=======
+      # print("headers: ",headers)
+      # print("body: ",body)
+      new_headers = headers.replace("/send-peer", "/receive-message", 1)
+      # print("new_headers: ",new_headers)
+>>>>>>> origin/main
       
       body_json = json.loads(body)
       messageupdate = body_json['message']
@@ -127,7 +134,7 @@ def send_message(headers, body):
       peerip = body_json['message']['receiver'].split(":")[0]
       peerport = int(body_json['message']['receiver'].split(":")[1])
       
-      print(f"Connecting to peer {peerip}:{peerport}...")
+      # print(f"Connecting to peer {peerip}:{peerport}...")
       client_socket = socket.socket()
       client_socket.connect((peerip, peerport))
       
@@ -137,7 +144,7 @@ def send_message(headers, body):
       
       # Wait for response to ensure delivery and check status
       response = client_socket.recv(4096).decode()
-      print(f"Response from peer {peerip}:{peerport}:\n{response}")
+      # print(f"Response from peer {peerip}:{peerport}:\n{response}")
       
       client_socket.close()
       
@@ -191,7 +198,7 @@ def get_listfunc(ip, port):
         return None
     finally:
         client_socket.close()
-    print("start: {}\n".format(receive_message))
+    # print("start: {}\n".format(receive_message))
 
     lines = receive_message.split('\r\n\r\n', 1)
     print("lines: {}\n".format(lines[1]))
@@ -219,7 +226,7 @@ def get_listfunc(ip, port):
 
 def handle_peer_connection(client,addr):
   message = client.recv(1024).decode()
-  print(message)
+  # print(message)
   #to do 
 
 
@@ -229,7 +236,7 @@ def setIP(ip):
 
 def proc_message(addr, conn):
   message = conn.recv(1024).decode()
-  print(message)
+  # print(message)
   # to do more 
 
 
@@ -323,7 +330,7 @@ def submit_info(ip,port,peer_ip,peer_port):
   )
   client_socket.send(request_message.encode())
   receive_message =   client_socket.recv(1024).decode()
-  print(receive_message)
+  # print(receive_message)
 
 def listen_server(ip,port,peip,pepo): 
   listener = socket.socket()
@@ -353,14 +360,14 @@ def add_list(ip, port, peer_ip,peer_port):
   
   client_socket.send(msg.encode())  
   receive_message = client_socket.recv(1024).decode()
-  print(receive_message)
+  # print(receive_message)
 
 def get_list(ip,port):
   client_socket = socket.socket()
   client_socket.connect((ip,port))
   client_socket.send(request_message_getlist.encode())  
   receive_message = client_socket.recv(1024).decode()
-  print(receive_message)
+  # print(receive_message)
   return receive_message
 def setServerIP(ip):
     global server_ip

@@ -22,11 +22,12 @@ The current version supports MIME type detection, content loading and header for
 """
 import datetime
 import os
+import socket
 import mimetypes
 from .dictionary import CaseInsensitiveDict
 
 BASE_DIR = ""
-
+userlist = []
 class Response():   
     """The :class:`Response <Response>` object, which contains a
     server's response to an HTTP request.
@@ -168,6 +169,9 @@ class Response():
             base_dir = BASE_DIR+"apps/"
             self.headers['Content-Type']='application/{}'.format(sub_type)
         #
+        elif main_type == 'get-list':
+            base_dir = BASE_DIR+"apps/"
+            self.headers['Content-Type']='application/{}'.format(sub_type)
         #  TODO: process other mime_type
         #        application/xml       
         #        application/zip
@@ -191,7 +195,33 @@ class Response():
 
         return base_dir
 
+    def get_listfunc(ip, port):
+        client_socket = socket.socket()
+        try:
+            client_socket.connect((ip, port))
+            request_message_getlist = (
+                f"GET /get-list HTTP/1.1\r\n"
+                f"Host: {ip}:{port}\r\n"
+                f"Cookie: auth=true\r\n"
+                f"\r\n"
+            )
+            client_socket.send(request_message_getlist.encode()) 
+            
+            # 1. Receive and DECODE the bytes to string immediately
+            receive_message = client_socket.recv(4096).decode('utf-8')
+            
+        except Exception as e:
+            print(f"[ERROR] Socket connection failed: {e}")
+            return None
+        finally:
+            client_socket.close()
+        print("start: {}\n".format(receive_message))
 
+        lines = receive_message.split('\r\n\r\n', 1)
+        print("lines: {}\n".format(lines[1]))
+        clean_response = lines[1] if len(lines) > 1 else ""
+        print("clean_response: {}\n".format(clean_response))
+        return clean_response
     def build_content(self, path, base_dir):
         """
         Loads the objects file from storage space.
@@ -209,8 +239,8 @@ class Response():
             #        store in the return value of content
             #
         try:
-            with open(filepath, "rb") as f:
-                content = f.read()
+            
+                
             if path == "return.json":
                 # Clear the return.json
                 with open(filepath, "w") as f:
@@ -350,9 +380,7 @@ class Response():
         #
         # TODO: add support objects
         #
-        elif path == '/get-list':
-            base_dir = self.prepare_content_type(mime_type = 'application/json')
-            j
+        
         elif mime_type == 'application/octet-stream':
             base_dir = self.prepare_content_type(mime_type = 'application/json')
             path = "return.json"
