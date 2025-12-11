@@ -113,12 +113,12 @@ def get_messages(headers, body):
     except Exception as e:
       return 500, str(e)
 
-@app.route("/send-message", methods=["POST"])
+@app.route("/send-peer", methods=["POST"])
 def send_message(headers, body):
     try:
       # print("headers: ",headers)
       # print("body: ",body)
-      new_headers = headers.replace("/send-message", "/receive-message", 1)
+      new_headers = headers.replace("/send-peer", "/receive-message", 1)
       # print("new_headers: ",new_headers)
       
       body_json = json.loads(body)
